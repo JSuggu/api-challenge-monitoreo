@@ -2,10 +2,7 @@ package com.api.modules.levels;
 
 import com.api.modules.plant.Plant;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "levels")
 public class Levels {
     @Id
@@ -28,5 +26,5 @@ public class Levels {
     @Column(nullable = false)
     private Boolean disabled;
     @OneToMany(mappedBy = "levels")
-    List<Plant> plants;
+    private List<Plant> plants;
 }

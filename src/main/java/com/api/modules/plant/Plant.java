@@ -9,10 +9,7 @@ import com.api.modules.temperature.Temperature;
 import com.api.modules.tension.Tension;
 import com.api.modules.wind.Wind;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -21,6 +18,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "plants")
 public class Plant {
     @Id
