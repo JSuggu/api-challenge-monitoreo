@@ -1,7 +1,7 @@
 package com.api.handler;
 
 public abstract class StatusCode {
-    public static final int SUCCESS = 200;
+    public static final int OK = 200;
     public static final int CREATED = 201;
     public static final int NO_CONTENT = 204;
     public static final int INVALID_ARGUMENT = 400;
