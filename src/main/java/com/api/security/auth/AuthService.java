@@ -6,9 +6,12 @@ import com.api.modules.user.UserDTO;
 import com.api.modules.user.UserRepository;
 import com.api.security.jwt.JwtService;
 import com.api.security.jwt.Token;
+import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,7 +38,7 @@ public class AuthService {
         return "User saved successfully";
     }
 
-    public LoginResponse login(LoginRequest request){
+    public LoginResponse login(LoginRequest request) {
         var auth = authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(
                   request.getUsername(),

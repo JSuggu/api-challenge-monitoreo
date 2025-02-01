@@ -5,6 +5,7 @@ import com.api.handler.StatusCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,7 +16,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public Result register(@Valid @RequestBody RegisterRequest request){
+    public Result register(@Valid @RequestBody RegisterRequest request) {
         String message = authService.register(request);
         return Result
                 .builder()
@@ -27,7 +28,7 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/login")
-    public Result login(@Valid @RequestBody LoginRequest request){
+    public Result login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);
         return Result
                 .builder()
