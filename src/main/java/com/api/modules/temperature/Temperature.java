@@ -25,6 +25,4 @@ public class Temperature {
     private Integer redAlerts;
     @Column(nullable = false)
     private Boolean disabled;
-    @OneToMany(mappedBy = "temperature")
-    private List<Plant> plants;
 }

@@ -25,6 +25,4 @@ public class Levels {
     private Integer redAlerts;
     @Column(nullable = false)
     private Boolean disabled;
-    @OneToMany(mappedBy = "levels")
-    private List<Plant> plants;
 }

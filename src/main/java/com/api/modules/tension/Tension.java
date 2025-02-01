@@ -25,6 +25,4 @@ public class Tension {
     private Integer redAlerts;
     @Column(nullable = false)
     private Boolean disabled;
-    @OneToMany(mappedBy = "tension")
-    private List<Plant> plants;
 }

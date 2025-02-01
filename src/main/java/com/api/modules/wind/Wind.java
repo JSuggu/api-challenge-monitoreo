@@ -25,6 +25,4 @@ public class Wind {
     private Integer redAlerts;
     @Column(nullable = false)
     private Boolean disabled;
-    @OneToMany(mappedBy = "wind")
-    private List<Plant> plants;
 }

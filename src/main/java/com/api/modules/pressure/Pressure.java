@@ -25,6 +25,4 @@ public class Pressure {
     private Integer redAlerts;
     @Column(nullable = false)
     private Boolean disabled;
-    @OneToMany(mappedBy = "pressure")
-    private List<Plant> plants;
 }

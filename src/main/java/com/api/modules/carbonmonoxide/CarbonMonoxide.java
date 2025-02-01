@@ -25,6 +25,4 @@ public class CarbonMonoxide {
     private Integer redAlerts;
     @Column(nullable = false)
     private Boolean disabled;
-    @OneToMany(mappedBy = "carbonMonoxide")
-    private List<Plant> plants;
 }

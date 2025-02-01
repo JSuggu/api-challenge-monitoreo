@@ -30,28 +30,28 @@ public class Plant {
     private String name;
     @Column(nullable = false)
     private String country;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "temperature_id")
     private Temperature temperature;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pressure_id")
     private Pressure pressure;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wind_id")
     private Wind wind;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "levels_id")
     private Levels levels;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "energy_id")
     private Energy energy;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tension_id")
     private Tension tension;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "carbon_monoxide_id")
     private CarbonMonoxide carbonMonoxide;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "other_gases_id")
     private OtherGases otherGases;
 

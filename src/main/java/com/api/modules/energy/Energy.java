@@ -25,6 +25,4 @@ public class Energy {
     private Integer redAlerts;
     @Column(nullable = false)
     private Boolean disabled;
-    @OneToMany(mappedBy = "energy")
-    private List<Plant> plants;
 }
