@@ -25,6 +25,7 @@ public class Plant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Builder.Default
     @Column(unique = true, nullable = false, updatable = false)
     private String uuid = UUID.randomUUID().toString();
     @Column(unique = true, nullable = false)

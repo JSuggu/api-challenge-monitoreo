@@ -6,6 +6,7 @@ import com.api.modules.sensors.levels.Levels;
 import com.api.modules.sensors.othergases.OtherGases;
 import com.api.modules.sensors.pressure.Pressure;
 import com.api.modules.sensors.temperature.Temperature;
+import com.api.modules.sensors.tension.Tension;
 import com.api.modules.user.User;
 import com.api.modules.user.UserService;
 import com.api.modules.sensors.wind.Wind;
@@ -42,6 +43,7 @@ public class PlantService {
                 .wind(new Wind())
                 .levels(new Levels())
                 .energy(new Energy())
+                .tension(new Tension())
                 .carbonMonoxide(new CarbonMonoxide())
                 .otherGases(new OtherGases())
                 .build();
