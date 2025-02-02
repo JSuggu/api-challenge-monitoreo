@@ -12,6 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UserDTO{
+    private String uuid;
     private String username;
     private String email;
     private Role role;

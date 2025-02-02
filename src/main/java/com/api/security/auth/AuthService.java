@@ -52,6 +52,7 @@ public class AuthService {
         User dbUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         UserDTO userDTO = new UserDTO(
+                dbUser.getUuid(),
                 dbUser.getUsername(),
                 dbUser.getEmail(),
                 dbUser.getRole()

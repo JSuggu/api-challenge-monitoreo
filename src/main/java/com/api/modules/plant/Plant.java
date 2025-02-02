@@ -7,6 +7,7 @@ import com.api.modules.othergases.OtherGases;
 import com.api.modules.pressure.Pressure;
 import com.api.modules.temperature.Temperature;
 import com.api.modules.tension.Tension;
+import com.api.modules.user.User;
 import com.api.modules.wind.Wind;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +31,9 @@ public class Plant {
     private String name;
     @Column(nullable = false)
     private String country;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_uuid", referencedColumnName = "uuid", nullable = false)
+    private User user;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "temperature_id")
     private Temperature temperature;
@@ -54,5 +58,4 @@ public class Plant {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "other_gases_id")
     private OtherGases otherGases;
-
 }
