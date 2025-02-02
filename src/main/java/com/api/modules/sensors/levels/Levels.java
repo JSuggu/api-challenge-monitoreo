@@ -1,4 +1,4 @@
-package com.api.modules.levels;
+package com.api.modules.sensors.levels;
 
 import com.api.modules.plant.Plant;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package com.api.modules.tension;
+package com.api.modules.sensors.tension;
 
 import com.api.modules.plant.Plant;
 import jakarta.persistence.*;

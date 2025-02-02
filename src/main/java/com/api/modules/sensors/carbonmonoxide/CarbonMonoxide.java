@@ -1,4 +1,4 @@
-package com.api.modules.carbonmonoxide;
+package com.api.modules.sensors.carbonmonoxide;
 
 import com.api.modules.plant.Plant;
 import jakarta.persistence.*;

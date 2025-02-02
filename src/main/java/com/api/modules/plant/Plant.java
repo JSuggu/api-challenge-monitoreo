@@ -1,14 +1,14 @@
 package com.api.modules.plant;
 
-import com.api.modules.carbonmonoxide.CarbonMonoxide;
-import com.api.modules.energy.Energy;
-import com.api.modules.levels.Levels;
-import com.api.modules.othergases.OtherGases;
-import com.api.modules.pressure.Pressure;
-import com.api.modules.temperature.Temperature;
-import com.api.modules.tension.Tension;
+import com.api.modules.sensors.carbonmonoxide.CarbonMonoxide;
+import com.api.modules.sensors.energy.Energy;
+import com.api.modules.sensors.levels.Levels;
+import com.api.modules.sensors.othergases.OtherGases;
+import com.api.modules.sensors.pressure.Pressure;
+import com.api.modules.sensors.temperature.Temperature;
+import com.api.modules.sensors.tension.Tension;
 import com.api.modules.user.User;
-import com.api.modules.wind.Wind;
+import com.api.modules.sensors.wind.Wind;
 import jakarta.persistence.*;
 import lombok.*;
 

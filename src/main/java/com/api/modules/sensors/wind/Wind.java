@@ -1,4 +1,4 @@
-package com.api.modules.wind;
+package com.api.modules.sensors.wind;
 
 import com.api.modules.plant.Plant;
 import jakarta.persistence.*;

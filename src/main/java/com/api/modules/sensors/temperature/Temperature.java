@@ -1,4 +1,4 @@
-package com.api.modules.temperature;
+package com.api.modules.sensors.temperature;
 
 import com.api.modules.plant.Plant;
 import jakarta.persistence.*;

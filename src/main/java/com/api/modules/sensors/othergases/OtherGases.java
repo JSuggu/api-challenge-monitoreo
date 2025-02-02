@@ -1,4 +1,4 @@
-package com.api.modules.othergases;
+package com.api.modules.sensors.othergases;
 
 import com.api.modules.plant.Plant;
 import jakarta.persistence.*;
