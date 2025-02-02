@@ -1,4 +1,4 @@
-package com.api.modules.wind;
+package com.api.modules.othergases;
 
 import com.api.modules.plant.Plant;
 import jakarta.persistence.*;
@@ -12,17 +12,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "winds")
-public class Wind {
+@Table(name = "other_gases")
+public class OtherGases {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private Integer reading;
+    private Integer reading = 0;
     @Column(nullable = false)
-    private Integer averageAlerts;
+    private Integer averageAlerts = 0;
     @Column(nullable = false)
-    private Integer redAlerts;
+    private Integer redAlerts = 0;
     @Column(nullable = false)
-    private Boolean disabled;
+    private Boolean disabled = false;
 }
