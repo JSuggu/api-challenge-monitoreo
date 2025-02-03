@@ -10,14 +10,7 @@ public abstract class DTOMapper {
                 .uuid(plant.getUuid())
                 .name(plant.getName())
                 .country(plant.getCountry())
-                .temperature(plant.getTemperature())
-                .pressure(plant.getPressure())
-                .wind(plant.getWind())
-                .levels(plant.getLevels())
-                .energy(plant.getEnergy())
-                .tension(plant.getTension())
-                .carbonMonoxide(plant.getCarbonMonoxide())
-                .otherGases(plant.getOtherGases())
+                .sensors(plant.getSensors())
                 .build();
     }
 }

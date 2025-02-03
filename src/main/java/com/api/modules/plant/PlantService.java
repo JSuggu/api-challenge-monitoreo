@@ -1,19 +1,20 @@
 package com.api.modules.plant;
 
-import com.api.modules.sensors.carbonmonoxide.CarbonMonoxide;
-import com.api.modules.sensors.energy.Energy;
-import com.api.modules.sensors.levels.Levels;
-import com.api.modules.sensors.othergases.OtherGases;
-import com.api.modules.sensors.pressure.Pressure;
-import com.api.modules.sensors.temperature.Temperature;
-import com.api.modules.sensors.tension.Tension;
+import com.api.modules.sensor.Sensor;
+import com.api.modules.sensor.SensorService;
+import com.api.modules.sensor_type.SensorType;
+import com.api.modules.sensor_type.SensorTypeService;
 import com.api.modules.user.User;
 import com.api.modules.user.UserService;
-import com.api.modules.sensors.wind.Wind;
 import com.api.utils.DTOMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,9 @@ import java.util.Objects;
 public class PlantService {
     private final PlantRepository plantRepository;
     private final UserService userService;
+    private final SensorService sensorService;
+    private final SensorTypeService sensorTypeService;
+    private final EntityManager entityManager;
 
     public List<PlantResponseDTO> getAllPlants(String userUuid){
 
@@ -30,6 +34,7 @@ public class PlantService {
         return plantRepository.findByUser_Uuid(userUuid).stream().map(DTOMapper::plantToPlantResponseDTO).toList();
     }
 
+    @Transactional
     public PlantResponseDTO savePlant (PlantCreateDTO plant, String uuid){
         User dbUser = userService.getUserByUuid(uuid);
 
@@ -38,16 +43,18 @@ public class PlantService {
                 .name(plant.getName())
                 .country(plant.getCountry())
                 .user(dbUser)
-                .temperature(new Temperature())
-                .pressure(new Pressure())
-                .wind(new Wind())
-                .levels(new Levels())
-                .energy(new Energy())
-                .tension(new Tension())
-                .carbonMonoxide(new CarbonMonoxide())
-                .otherGases(new OtherGases())
                 .build();
 
-        return DTOMapper.plantToPlantResponseDTO(plantRepository.save(newPlant));
+        Plant savedPlant = plantRepository.save(newPlant);
+
+        List<SensorType> sensorTypeList = sensorTypeService.getAllSensorsTypes();
+
+        sensorTypeList.forEach(sensorType -> {
+            sensorService.saveSensor(savedPlant, sensorType);
+        });
+
+        entityManager.refresh(savedPlant);
+
+        return DTOMapper.plantToPlantResponseDTO(savedPlant);
     }
 }
