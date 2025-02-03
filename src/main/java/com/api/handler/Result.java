@@ -11,5 +11,6 @@ public class Result {
     private Boolean flag;
     private Integer code;
     private String message;
-    private Object data;
+    @Builder.Default
+    private Object data = null;
 }

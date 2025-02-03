@@ -26,7 +26,7 @@ public class Plant {
     private String name;
     @Column(nullable = false)
     private String country;
-    @OneToMany(mappedBy = "plant", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "plant", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Sensor> sensors;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_uuid", referencedColumnName = "uuid", nullable = false)

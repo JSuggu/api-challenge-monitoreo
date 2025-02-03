@@ -1,8 +1,9 @@
 package com.api.modules.plant;
 
 import com.api.handler.Result;
-import com.api.modules.user.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,9 +14,10 @@ import java.util.List;
 public class PlantController {
     private final PlantService plantService;
 
-    @GetMapping({"", "/{user-uuid}"})
-    public Result getAllPlant(@PathVariable(name = "user-uuid", required = false) String userUuid){
-        List<PlantResponseDTO> plants = plantService.getAllPlants(userUuid);
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("")
+    public Result getAllPlants(){
+        List<PlantResponseDTO> plants = plantService.getAllPlants();
         return Result
                 .builder()
                 .flag(true)
@@ -25,15 +27,54 @@ public class PlantController {
                 .build();
     }
 
-    @PostMapping("/save/{user-uuid}")
-    public Result savePlant(@RequestBody PlantCreateDTO request, @PathVariable(name = "user-uuid") String userUuid){
-        PlantResponseDTO savedPlant = plantService.savePlant(request, userUuid);
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{user-uuid}")
+    public Result getAllPlantsByUser(@PathVariable(name = "user-uuid") String userUuid){
+        List<PlantResponseDTO> plants = plantService.getAllPlantsByUser(userUuid);
         return Result
                 .builder()
                 .flag(true)
                 .code(200)
-                .message("Success Save")
+                .message("Success")
+                .data(plants)
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/save")
+    public Result savePlant(@Valid @RequestBody PlantCreateDTO request){
+        PlantResponseDTO savedPlant = plantService.savePlant(request);
+        return Result
+                .builder()
+                .flag(true)
+                .code(201)
+                .message("Successful Save")
                 .data(savedPlant)
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/update/{uuid}")
+    public Result updatePlant(@Valid @RequestBody PlantCreateDTO request, @PathVariable(name = "uuid") String uuid){
+        PlantResponseDTO updatedPlant = plantService.updatePlant(request, uuid);
+        return Result
+                .builder()
+                .flag(true)
+                .code(201)
+                .message("Successful Update")
+                .data(updatedPlant)
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/delete/{uuid}")
+    public Result deletePlant(@PathVariable(name = "uuid") String uuid){
+        String message = plantService.deletePlant(uuid);
+        return Result
+                .builder()
+                .flag(true)
+                .code(200)
+                .message(message)
                 .build();
     }
 }
