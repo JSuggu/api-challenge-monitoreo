@@ -19,5 +19,4 @@ public class SensorService {
         return sensorRepository.save(newSensor);
     }
 
-
 }

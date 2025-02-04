@@ -17,12 +17,4 @@ public class ApiApplication {
 
 	}
 
-	@Bean
-	public CommandLineRunner runner(SensorTypeRepository sensorTypeRepository) throws Exception {
-		List<String> types = List.of("temperature", "pressure", "wind", "levels", "energy", "tension", "carbon_monoxide", "other_gases");
-		return args -> {
-			types.forEach(type -> sensorTypeRepository.save(SensorType.builder().name(type).build()));
-		};
-	}
-
 }

@@ -10,6 +10,11 @@ import java.util.List;
 public class SensorTypeService {
     private final SensorTypeRepository sensorTypeRepository;
 
+    public SensorType saveSensorType(String name){
+        SensorType newSensorType = SensorType.builder().name(name).build();
+        return sensorTypeRepository.save(newSensorType);
+    }
+
     public List<SensorType> getAllSensorsTypes(){
         return sensorTypeRepository.findAll();
     }
