@@ -15,6 +15,10 @@ public class PlantService {
     private final PlantRepository plantRepository;
     private final UserService userService;
 
+    public Plant getPlantByUuid(String uuid){
+        return plantRepository.findByUuid(uuid).orElseThrow(() -> new RuntimeException("Plant not found"));
+    }
+
     public List<PlantResponseDTO> getAllPlants(){
         return plantRepository.findAll().stream().map(DTOMapper::plantToPlantResponseDTO).toList();
     }

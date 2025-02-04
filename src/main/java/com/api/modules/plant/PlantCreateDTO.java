@@ -7,7 +7,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class PlantCreateDTO {
     @NotBlank(message = "UserUuid cant be empty")
     private String userUuid;
