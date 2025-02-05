@@ -1,17 +1,18 @@
 package com.api.modules.sensor;
 
+import com.api.handler.custom_exception.CustomNotFoundException;
 import com.api.modules.plant.Plant;
-import com.api.modules.plant.PlantResponseDTO;
 import com.api.modules.plant.PlantService;
 import com.api.modules.sensor_type.SensorType;
 import com.api.modules.sensor_type.SensorTypeService;
 import com.api.security.auth.AuthService;
-import com.api.utils.DTOMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.management.OperationsException;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -25,12 +26,12 @@ public class SensorService {
     private final AuthService authService;
 
     @Transactional
-    public List<Sensor> saveDefaultSensorsByPlant (SensorDefaultCreateDTO request){
+    public List<Sensor> saveDefaultSensorsByPlant (SensorDefaultCreateDTO request) throws CustomNotFoundException, OperationsException {
         Plant dbPlant = plantService.getPlantByUuid(request.plantUuid);
 
-        if(!dbPlant.getSensors().isEmpty()) throw new RuntimeException("You cant add all the sensors");
+        if(!dbPlant.getSensors().isEmpty()) throw new OperationsException("You cant add all the sensors");
 
-        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new RuntimeException("You dont have permission to edit this plant");
+        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new PermissionDeniedDataAccessException("You dont have permission to modify this plant.", null);
 
         List<SensorType> sensorTypeList = sensorTypeService.getAllSensorsTypes();
 
@@ -50,11 +51,11 @@ public class SensorService {
     }
 
     @Transactional
-    public Sensor saveSensor(SensorCreateDTO request){
+    public Sensor saveSensor(SensorCreateDTO request) throws CustomNotFoundException {
         SensorType sensorType = sensorTypeService.getSensorByName(request.getSensorTypeName());
         Plant dbPlant = plantService.getPlantByUuid(request.plantUuid);
 
-        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new RuntimeException("You dont have permission to edit this plant"); ;
+        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new PermissionDeniedDataAccessException("You dont have permission to modify this plant.", null);
 
         Sensor newSensor = Sensor
                 .builder()

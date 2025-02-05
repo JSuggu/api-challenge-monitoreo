@@ -1,5 +1,8 @@
 package com.api.handler;
 
+import com.api.handler.custom_exception.CustomNotFoundException;
+import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.management.OperationsException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -66,5 +70,48 @@ public class ExceptionHandlerAdvice {
                 .build();
     }
 
+    @ExceptionHandler(CustomNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Result notFoundException(CustomNotFoundException ex){
 
+        return Result
+                .builder()
+                .flag(false)
+                .code(404)
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(OperationsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Result operationsException(OperationsException ex){
+        return Result
+                .builder()
+                .flag(false)
+                .code(400)
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(PermissionDeniedDataAccessException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Result permissionDeniedDataAccessException(PermissionDeniedDataAccessException ex){
+        return Result
+                .builder()
+                .flag(false)
+                .code(401)
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Result expiredJwtException(ExpiredJwtException ex){
+        return Result
+                .builder()
+                .flag(false)
+                .code(400)
+                .message(ex.getMessage())
+                .build();
+    }
 }

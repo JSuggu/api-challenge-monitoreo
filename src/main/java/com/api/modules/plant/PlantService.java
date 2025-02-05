@@ -1,11 +1,13 @@
 package com.api.modules.plant;
 
+import com.api.handler.custom_exception.CustomNotFoundException;
 import com.api.modules.user.User;
 import com.api.modules.user.UserService;
 import com.api.security.auth.AuthService;
 import com.api.utils.DTOMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,8 @@ public class PlantService {
     private final UserService userService;
     private final AuthService authService;
 
-    public Plant getPlantByUuid(String uuid){
-        return plantRepository.findByUuid(uuid).orElseThrow(() -> new RuntimeException("Plant not found"));
+    public Plant getPlantByUuid(String uuid) throws CustomNotFoundException {
+        return plantRepository.findByUuid(uuid).orElseThrow(() -> new CustomNotFoundException("Plant not found"));
     }
 
     public List<PlantResponseDTO> getAllPlants(){
@@ -46,10 +48,10 @@ public class PlantService {
     }
 
     @Transactional
-    public PlantResponseDTO updatePlant (PlantCreateDTO request, String uuid){
-        Plant dbPlant = plantRepository.findByUuid(uuid).orElseThrow();
+    public PlantResponseDTO updatePlant (PlantCreateDTO request, String uuid) throws CustomNotFoundException {
+        Plant dbPlant = plantRepository.findByUuid(uuid).orElseThrow(() -> new CustomNotFoundException("Plant not found"));
 
-        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new RuntimeException("You dont have permission to modify this plant.");
+        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new PermissionDeniedDataAccessException("You dont have permission to modify this plant.", null);
 
         dbPlant.setName(request.getName());
         dbPlant.setCountry(request.getCountry());
@@ -63,6 +65,6 @@ public class PlantService {
     public String deletePlant (String uuid){
         int affectedRows = plantRepository.deleteByUuidAndUserUuid(uuid, authService.getUserUuid());
 
-        return affectedRows == 0 ? "The plant you are trying delete doesnt exist or dont have permissions" : "Plant deleted";
+        return affectedRows == 0 ? "The plant you are trying delete doesnt exist or dont have permissons" : "Plant deleted";
     }
 }

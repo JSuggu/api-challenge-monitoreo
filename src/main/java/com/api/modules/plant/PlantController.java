@@ -3,6 +3,7 @@ package com.api.modules.plant;
 import com.api.handler.Result;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import static org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +56,7 @@ public class PlantController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/update/{uuid}")
-    public Result updatePlant(@Valid @RequestBody PlantCreateDTO request, @PathVariable(name = "uuid") String uuid){
+    public Result updatePlant(@Valid @RequestBody PlantCreateDTO request, @PathVariable(name = "uuid") String uuid) throws NotFoundException {
         PlantResponseDTO updatedPlant = plantService.updatePlant(request, uuid);
         return Result
                 .builder()
