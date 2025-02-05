@@ -16,7 +16,7 @@ public class PlantController {
     private final PlantService plantService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("")
+    @GetMapping("/dev")
     public Result getAllPlants(){
         List<PlantResponseDTO> plants = plantService.getAllPlants();
         return Result
@@ -29,7 +29,7 @@ public class PlantController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/user")
+    @GetMapping("/admin")
     public Result getAllPlantsByUser(){
         List<PlantResponseDTO> plants = plantService.getAllPlantsByUser();
         return Result
@@ -42,7 +42,7 @@ public class PlantController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/save")
+    @PostMapping("/admin/save")
     public Result savePlant(@Valid @RequestBody PlantCreateDTO request){
         PlantResponseDTO savedPlant = plantService.savePlant(request);
         return Result
@@ -55,7 +55,7 @@ public class PlantController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PutMapping("/update/{uuid}")
+    @PutMapping("/admin/update/{uuid}")
     public Result updatePlant(@Valid @RequestBody PlantCreateDTO request, @PathVariable(name = "uuid") String uuid) throws NotFoundException {
         PlantResponseDTO updatedPlant = plantService.updatePlant(request, uuid);
         return Result
@@ -68,7 +68,7 @@ public class PlantController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/delete/{uuid}")
+    @DeleteMapping("/admin/delete/{uuid}")
     public Result deletePlant(@PathVariable(name = "uuid") String uuid){
         String message = plantService.deletePlant(uuid);
         return Result

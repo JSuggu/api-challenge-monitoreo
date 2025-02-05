@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -25,8 +26,10 @@ public class FilterChain {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.
                 authorizeHttpRequests(request -> request
-                        .anyRequest().permitAll())
-                .httpBasic(Customizer.withDefaults())
+                        .requestMatchers(new RegexRequestMatcher(".*/auth/.*", null)).permitAll()
+                        .requestMatchers(new RegexRequestMatcher(".*/dev/.*", null)).hasRole("DEVELOPER")
+                        .requestMatchers(new RegexRequestMatcher(".*/admin/.*", null)).hasAnyRole("ADMIN", "DEVELOPER")
+                        .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sessionManager -> sessionManager

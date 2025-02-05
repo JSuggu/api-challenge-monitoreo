@@ -21,7 +21,7 @@ public class SensorController {
     private final SensorService sensorService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/default-save")
+    @PostMapping("/admin/default-save")
     public Result saveDefaultSensorsByPlant(@Valid @RequestBody SensorDefaultCreateDTO request) throws CustomNotFoundException, OperationsException {
         List<Sensor> sensors = sensorService.saveDefaultSensorsByPlant(request);
         return Result
@@ -34,7 +34,7 @@ public class SensorController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/save")
+    @PostMapping("/admin/save")
     public Result saveSensor(@Valid @RequestBody SensorCreateDTO request) throws CustomNotFoundException, OperationsException {
         Sensor savedSensor = sensorService.saveSensor(request);
         return Result
@@ -47,7 +47,7 @@ public class SensorController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/update/{id}")
+    @PostMapping("/admin/update/{id}")
     public Result updateSensor(@Valid @RequestBody SensorUpdateDTO request, @PathVariable(name = "id") Long id) throws CustomNotFoundException {
         Sensor savedSensor = sensorService.updateSensor(request, id);
         return Result
@@ -60,7 +60,7 @@ public class SensorController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public Result deleteSensor(@PathVariable(name = "id") Long id){
         String message = sensorService.deleteSensor(id);
         return Result
