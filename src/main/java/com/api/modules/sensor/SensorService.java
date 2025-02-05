@@ -71,8 +71,7 @@ public class SensorService {
 
     @Transactional
     public String deleteSensor (Long id){
-        sensorRepository.deleteById(id);
-
-        return "Sensor deleted";
+        int rowsAffected = sensorRepository.deleteSensorByIdAndUserUuid(id, authService.getUserUuid());
+        return rowsAffected == 0? "Sensor dont exist or your dont have permissions" :  "Sensor deleted";
     }
 }

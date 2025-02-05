@@ -61,8 +61,8 @@ public class PlantService {
 
     @Transactional
     public String deletePlant (String uuid){
-        int affectedRows = plantRepository.deleteByUuid(uuid);
+        int affectedRows = plantRepository.deleteByUuidAndUserUuid(uuid, authService.getUserUuid());
 
-        return affectedRows == 0 ? "The plant you are trying delete doesnt exist" : "Plant deleted";
+        return affectedRows == 0 ? "The plant you are trying delete doesnt exist or dont have permissions" : "Plant deleted";
     }
 }

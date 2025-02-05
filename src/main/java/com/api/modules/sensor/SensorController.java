@@ -43,7 +43,7 @@ public class SensorController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/update/{id}")
-    public Result updateSensor(@Valid @RequestBody SensorCreateDTO request, @PathVariable(name = "id") Integer id){
+    public Result updateSensor(@Valid @RequestBody SensorCreateDTO request, @PathVariable(name = "id") Long id){
         Sensor savedSensor = sensorService.saveSensor(request);
         return Result
                 .builder()
