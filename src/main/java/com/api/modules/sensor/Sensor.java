@@ -28,7 +28,7 @@ public class Sensor {
     private Integer redAlerts = 0;
     @Builder.Default
     @Column(nullable = false)
-    private Boolean disabled = false;
+    private Boolean enabled = true;
     @ManyToOne()
     @JoinColumn(name = "sensor_type_id", nullable = false)
     private SensorType sensorType;

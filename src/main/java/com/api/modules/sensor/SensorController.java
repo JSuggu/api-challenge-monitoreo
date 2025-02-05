@@ -2,6 +2,9 @@ package com.api.modules.sensor;
 
 import com.api.handler.Result;
 import com.api.handler.custom_exception.CustomNotFoundException;
+import com.api.modules.sensor.dto.SensorCreateDTO;
+import com.api.modules.sensor.dto.SensorDefaultCreateDTO;
+import com.api.modules.sensor.dto.SensorUpdateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +35,7 @@ public class SensorController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/save")
-    public Result saveSensor(@Valid @RequestBody SensorCreateDTO request) throws CustomNotFoundException {
+    public Result saveSensor(@Valid @RequestBody SensorCreateDTO request) throws CustomNotFoundException, OperationsException {
         Sensor savedSensor = sensorService.saveSensor(request);
         return Result
                 .builder()
@@ -45,13 +48,13 @@ public class SensorController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/update/{id}")
-    public Result updateSensor(@Valid @RequestBody SensorCreateDTO request, @PathVariable(name = "id") Long id) throws CustomNotFoundException {
-        Sensor savedSensor = sensorService.saveSensor(request);
+    public Result updateSensor(@Valid @RequestBody SensorUpdateDTO request, @PathVariable(name = "id") Long id) throws CustomNotFoundException {
+        Sensor savedSensor = sensorService.updateSensor(request, id);
         return Result
                 .builder()
                 .flag(true)
                 .code(201)
-                .message("Successful sensor created")
+                .message("Successful sensor update")
                 .data(savedSensor)
                 .build();
     }

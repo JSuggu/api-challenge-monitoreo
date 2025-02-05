@@ -3,6 +3,9 @@ package com.api.modules.sensor;
 import com.api.handler.custom_exception.CustomNotFoundException;
 import com.api.modules.plant.Plant;
 import com.api.modules.plant.PlantService;
+import com.api.modules.sensor.dto.SensorCreateDTO;
+import com.api.modules.sensor.dto.SensorDefaultCreateDTO;
+import com.api.modules.sensor.dto.SensorUpdateDTO;
 import com.api.modules.sensor_type.SensorType;
 import com.api.modules.sensor_type.SensorTypeService;
 import com.api.security.auth.AuthService;
@@ -27,9 +30,9 @@ public class SensorService {
 
     @Transactional
     public List<Sensor> saveDefaultSensorsByPlant (SensorDefaultCreateDTO request) throws CustomNotFoundException, OperationsException {
-        Plant dbPlant = plantService.getPlantByUuid(request.plantUuid);
+        Plant dbPlant = plantService.getPlantByUuid(request.getPlantUuid());
 
-        if(!dbPlant.getSensors().isEmpty()) throw new OperationsException("You cant add all the sensors");
+        if(!dbPlant.getSensors().isEmpty()) throw new OperationsException("You cant add all the sensors, the limit is 8");
 
         if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new PermissionDeniedDataAccessException("You dont have permission to modify this plant.", null);
 
@@ -51,23 +54,35 @@ public class SensorService {
     }
 
     @Transactional
-    public Sensor saveSensor(SensorCreateDTO request) throws CustomNotFoundException {
+    public Sensor saveSensor(SensorCreateDTO request) throws CustomNotFoundException, OperationsException {
         SensorType sensorType = sensorTypeService.getSensorByName(request.getSensorTypeName());
-        Plant dbPlant = plantService.getPlantByUuid(request.plantUuid);
+        Plant dbPlant = plantService.getPlantByUuid(request.getPlantUuid());
+
+        if(dbPlant.getSensors().size() >= 8) throw new OperationsException("You cant add more sensors, the limit is 8");
 
         if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new PermissionDeniedDataAccessException("You dont have permission to modify this plant.", null);
 
         Sensor newSensor = Sensor
                 .builder()
-                .reading(request.getReading())
-                .averageAlerts(request.getAverageAlerts())
-                .redAlerts(request.getRedAlerts())
-                .disabled(request.getDisabled())
                 .sensorType(sensorType)
                 .plant(dbPlant)
                 .build();
 
         return sensorRepository.save(newSensor);
+    }
+
+    @Transactional
+    public Sensor updateSensor(SensorUpdateDTO request, Long id) throws CustomNotFoundException {
+        Sensor dbSensor = sensorRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("Sensor not found"));
+
+        if(!dbSensor.getPlant().getUser().getUuid().equals(authService.getUserUuid())) throw new PermissionDeniedDataAccessException("You dont have permission to modify this plant.", null);
+
+        dbSensor.setReading(request.getReadings());
+        dbSensor.setAverageAlerts(request.getAverageAlerts());
+        dbSensor.setRedAlerts(request.getRedAlerts());
+        dbSensor.setEnabled(request.getDisabled());
+
+        return sensorRepository.save(dbSensor);
     }
 
     @Transactional
