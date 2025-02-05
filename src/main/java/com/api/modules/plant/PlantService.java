@@ -2,6 +2,7 @@ package com.api.modules.plant;
 
 import com.api.modules.user.User;
 import com.api.modules.user.UserService;
+import com.api.security.auth.AuthService;
 import com.api.utils.DTOMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 public class PlantService {
     private final PlantRepository plantRepository;
     private final UserService userService;
+    private final AuthService authService;
 
     public Plant getPlantByUuid(String uuid){
         return plantRepository.findByUuid(uuid).orElseThrow(() -> new RuntimeException("Plant not found"));
@@ -23,13 +25,13 @@ public class PlantService {
         return plantRepository.findAll().stream().map(DTOMapper::plantToPlantResponseDTO).toList();
     }
 
-    public List<PlantResponseDTO> getAllPlantsByUser(String userUuid){
-        return plantRepository.findByUser_Uuid(userUuid).stream().map(DTOMapper::plantToPlantResponseDTO).toList();
+    public List<PlantResponseDTO> getAllPlantsByUser(){
+        return plantRepository.findByUser_Uuid(authService.getUserUuid()).stream().map(DTOMapper::plantToPlantResponseDTO).toList();
     }
 
     @Transactional
     public PlantResponseDTO savePlant (PlantCreateDTO request){
-        User dbUser = userService.getUserByUuid(request.getUserUuid());
+        User dbUser = userService.getUserByUuid(authService.getUserUuid());
 
         Plant newPlant = Plant
                 .builder()
@@ -46,6 +48,8 @@ public class PlantService {
     @Transactional
     public PlantResponseDTO updatePlant (PlantCreateDTO request, String uuid){
         Plant dbPlant = plantRepository.findByUuid(uuid).orElseThrow();
+
+        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new RuntimeException("You dont have permission to modify this plant.");
 
         dbPlant.setName(request.getName());
         dbPlant.setCountry(request.getCountry());

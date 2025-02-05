@@ -28,9 +28,9 @@ public class PlantController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{user-uuid}")
-    public Result getAllPlantsByUser(@PathVariable(name = "user-uuid") String userUuid){
-        List<PlantResponseDTO> plants = plantService.getAllPlantsByUser(userUuid);
+    @GetMapping("/user")
+    public Result getAllPlantsByUser(){
+        List<PlantResponseDTO> plants = plantService.getAllPlantsByUser();
         return Result
                 .builder()
                 .flag(true)

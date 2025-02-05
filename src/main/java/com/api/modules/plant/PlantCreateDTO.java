@@ -8,8 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlantCreateDTO {
-    @NotBlank(message = "UserUuid cant be empty")
-    private String userUuid;
     @NotBlank(message = "Name cant be empty")
     private String name;
     @NotBlank(message = "Country cant be empty")

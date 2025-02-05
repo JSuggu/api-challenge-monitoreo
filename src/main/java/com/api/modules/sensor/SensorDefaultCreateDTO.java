@@ -12,7 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SensorDefaultCreateDTO {
     @NotBlank
-    String userUuid;
-    @NotBlank
     String plantUuid;
 }

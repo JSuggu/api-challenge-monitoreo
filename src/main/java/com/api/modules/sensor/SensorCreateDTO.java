@@ -12,8 +12,6 @@ import lombok.*;
 @AllArgsConstructor
 public class SensorCreateDTO {
     @NotBlank
-    String userUuid;
-    @NotBlank
     String plantUuid;
     @Min(0)
     @Max(10000)

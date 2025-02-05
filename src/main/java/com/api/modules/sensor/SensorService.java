@@ -5,6 +5,7 @@ import com.api.modules.plant.PlantResponseDTO;
 import com.api.modules.plant.PlantService;
 import com.api.modules.sensor_type.SensorType;
 import com.api.modules.sensor_type.SensorTypeService;
+import com.api.security.auth.AuthService;
 import com.api.utils.DTOMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,7 @@ public class SensorService {
     private final SensorTypeService sensorTypeService;
     private final PlantService plantService;
     private final EntityManager entityManager;
+    private final AuthService authService;
 
     @Transactional
     public List<Sensor> saveDefaultSensorsByPlant (SensorDefaultCreateDTO request){
@@ -28,7 +30,7 @@ public class SensorService {
 
         if(!dbPlant.getSensors().isEmpty()) throw new RuntimeException("You cant add all the sensors");
 
-        if(!dbPlant.getUser().getUuid().equals(request.getUserUuid())) throw new RuntimeException("You dont have permission to edit this plant");
+        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new RuntimeException("You dont have permission to edit this plant");
 
         List<SensorType> sensorTypeList = sensorTypeService.getAllSensorsTypes();
 
@@ -51,6 +53,8 @@ public class SensorService {
     public Sensor saveSensor(SensorCreateDTO request){
         SensorType sensorType = sensorTypeService.getSensorByName(request.getSensorTypeName());
         Plant dbPlant = plantService.getPlantByUuid(request.plantUuid);
+
+        if(!dbPlant.getUser().getUuid().equals(authService.getUserUuid())) throw new RuntimeException("You dont have permission to edit this plant"); ;
 
         Sensor newSensor = Sensor
                 .builder()
