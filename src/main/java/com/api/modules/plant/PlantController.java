@@ -1,6 +1,7 @@
 package com.api.modules.plant;
 
 import com.api.handler.Result;
+import com.api.handler.StatusCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import static org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -22,7 +23,7 @@ public class PlantController {
         return Result
                 .builder()
                 .flag(true)
-                .code(200)
+                .code(StatusCode.OK)
                 .message("Success")
                 .data(plants)
                 .build();
@@ -35,7 +36,7 @@ public class PlantController {
         return Result
                 .builder()
                 .flag(true)
-                .code(200)
+                .code(StatusCode.OK)
                 .message("Success")
                 .data(plants)
                 .build();
@@ -48,7 +49,7 @@ public class PlantController {
         return Result
                 .builder()
                 .flag(true)
-                .code(201)
+                .code(StatusCode.CREATED)
                 .message("Successful Save")
                 .data(savedPlant)
                 .build();
@@ -61,20 +62,20 @@ public class PlantController {
         return Result
                 .builder()
                 .flag(true)
-                .code(201)
+                .code(StatusCode.CREATED)
                 .message("Successful Update")
                 .data(updatedPlant)
                 .build();
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/admin/delete/{uuid}")
     public Result deletePlant(@PathVariable(name = "uuid") String uuid){
         String message = plantService.deletePlant(uuid);
         return Result
                 .builder()
                 .flag(true)
-                .code(200)
+                .code(StatusCode.NO_CONTENT)
                 .message(message)
                 .build();
     }

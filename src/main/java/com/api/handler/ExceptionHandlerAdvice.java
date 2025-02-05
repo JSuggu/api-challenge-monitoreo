@@ -2,6 +2,7 @@ package com.api.handler;
 
 import com.api.handler.custom_exception.CustomNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,7 +31,7 @@ public class ExceptionHandlerAdvice {
         return Result
                 .builder()
                 .flag(false)
-                .code(400)
+                .code(StatusCode.INVALID_ARGUMENT)
                 .message(ex.getBody().getDetail())
                 .data(errorDetails)
                 .build();
@@ -52,7 +53,7 @@ public class ExceptionHandlerAdvice {
         return Result
                 .builder()
                 .flag(false)
-                .code(500)
+                .code(StatusCode.INTERNAL_SERVER_ERROR)
                 .message("Database error")
                 .data(errorDetails)
                 .build();
@@ -61,11 +62,10 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result badCredentialsException(BadCredentialsException ex){
-
         return Result
                 .builder()
                 .flag(false)
-                .code(401)
+                .code(StatusCode.INVALID_ARGUMENT)
                 .message("Wrong username or password")
                 .build();
     }
@@ -73,11 +73,10 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(CustomNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Result notFoundException(CustomNotFoundException ex){
-
         return Result
                 .builder()
                 .flag(false)
-                .code(404)
+                .code(StatusCode.NOT_FOUND)
                 .message(ex.getMessage())
                 .build();
     }
@@ -88,7 +87,7 @@ public class ExceptionHandlerAdvice {
         return Result
                 .builder()
                 .flag(false)
-                .code(400)
+                .code(StatusCode.INVALID_ARGUMENT)
                 .message(ex.getMessage())
                 .build();
     }
@@ -99,7 +98,7 @@ public class ExceptionHandlerAdvice {
         return Result
                 .builder()
                 .flag(false)
-                .code(401)
+                .code(StatusCode.UNAUTHORIZED)
                 .message(ex.getMessage())
                 .build();
     }
@@ -110,7 +109,29 @@ public class ExceptionHandlerAdvice {
         return Result
                 .builder()
                 .flag(false)
-                .code(400)
+                .code(StatusCode.INVALID_ARGUMENT)
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Result malformedJwtException(MalformedJwtException ex){
+        return Result
+                .builder()
+                .flag(false)
+                .code(StatusCode.INVALID_ARGUMENT)
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Result runtimeException(RuntimeException ex){
+        return Result
+                .builder()
+                .flag(false)
+                .code(StatusCode.INTERNAL_SERVER_ERROR)
                 .message(ex.getMessage())
                 .build();
     }

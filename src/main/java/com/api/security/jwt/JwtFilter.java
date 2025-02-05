@@ -1,6 +1,7 @@
 package com.api.security.jwt;
 
 import ch.qos.logback.core.util.StringUtil;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,31 +27,49 @@ public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = getToken(request);
+        try {
+            String token = getToken(request);
 
-        if(token == null){
-            filterChain.doFilter(request,response);
-            return;
-        }
-
-        String username = null;
-
-        username = jwtService.extractUsername(token);
-
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
-
-            if(jwtService.validateToken(token, userDetails)){
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null,userDetails.getAuthorities()
-                );
-
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            if(token == null){
+                filterChain.doFilter(request,response);
+                return;
             }
 
-            filterChain.doFilter(request,response);
+            String username = null;
+
+            username = jwtService.extractUsername(token);
+
+            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
+
+                if(jwtService.validateToken(token, userDetails)){
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null,userDetails.getAuthorities()
+                    );
+
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+
+                filterChain.doFilter(request,response);
+            }
+        } catch (ServletException | IOException ex){
+            setErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, ex.getMessage());
+        } catch (JwtException ex) {
+            setErrorResponse(HttpServletResponse.SC_BAD_REQUEST, response, ex.getMessage());
         }
+
+    }
+
+    private void setErrorResponse(int status, HttpServletResponse response, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.getWriter().write("{"
+                + "\"flag\": false,"
+                + "\"code\":" + status + ","
+                + "\"message\":\"" + message + "\","
+                + "\"data\": null"
+                + "}");
     }
 
     private String getToken(HttpServletRequest request){
