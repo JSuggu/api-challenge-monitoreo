@@ -28,5 +28,5 @@ public class SensorUpdateDTO {
     @Max(value = 10000, message = "Max value cant be greater than 10000")
     @NotNull(message = "Red alerts cant be null")
     Integer redAlerts;
-    Boolean disabled;
+    Boolean enabled;
 }

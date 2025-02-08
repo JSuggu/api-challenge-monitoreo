@@ -80,7 +80,7 @@ public class SensorService {
         dbSensor.setReading(request.getReadings());
         dbSensor.setAverageAlerts(request.getAverageAlerts());
         dbSensor.setRedAlerts(request.getRedAlerts());
-        dbSensor.setEnabled(request.getDisabled());
+        dbSensor.setEnabled(request.getEnabled());
 
         return sensorRepository.save(dbSensor);
     }

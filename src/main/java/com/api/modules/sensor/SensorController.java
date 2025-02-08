@@ -48,7 +48,7 @@ public class SensorController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/admin/update/{id}")
+    @PutMapping("/admin/update/{id}")
     public Result updateSensor(@Valid @RequestBody SensorUpdateDTO request, @PathVariable(name = "id") Long id) throws CustomNotFoundException {
         Sensor savedSensor = sensorService.updateSensor(request, id);
         return Result
