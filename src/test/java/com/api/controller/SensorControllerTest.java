@@ -1,6 +1,5 @@
 package com.api.controller;
 
-import com.api.handler.StatusCode;
 import com.api.modules.plant.Plant;
 import com.api.modules.plant.PlantResponseDTO;
 import com.api.modules.sensor.Sensor;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -92,11 +90,8 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(plantUuid)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.CREATED))
-                .andExpect(jsonPath("$.message").value("Successful sensors added"))
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data", hasSize(8)));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(8));
     }
 
     @Test
@@ -107,10 +102,8 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(plantUuid)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.plantUuid").value("Plant uuid is mandatory"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.plantuuid").value("Plant uuid is mandatory"));
     }
 
     @Test
@@ -126,14 +119,11 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestNewSensor)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.CREATED))
-                .andExpect(jsonPath("$.message").value("Successful sensor created"))
-                .andExpect(jsonPath("$.data.reading").value(0))
-                .andExpect(jsonPath("$.data.averageAlerts").value(0))
-                .andExpect(jsonPath("$.data.redAlerts").value(0))
-                .andExpect(jsonPath("$.data.enabled").value(true))
-                .andExpect(jsonPath("$.data.sensorType.name").value("type1"));
+                .andExpect(jsonPath("$.reading").value(0))
+                .andExpect(jsonPath("$.averageAlerts").value(0))
+                .andExpect(jsonPath("$.redAlerts").value(0))
+                .andExpect(jsonPath("$.enabled").value(true))
+                .andExpect(jsonPath("$.sensorType.name").value("type1"));
     }
 
     @Test
@@ -144,10 +134,8 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestNewSensor)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.plantUuid").value("Plant uuid is mandatory"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.plantuuid").value("Plant uuid is mandatory"));
     }
 
     @Test
@@ -158,10 +146,8 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestNewSensor)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.sensorTypeName").value("Sensor type name cant be empty"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.sensortypename").value("Sensor type name cant be empty"));
     }
 
     @Test
@@ -179,13 +165,10 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestSensorUpdate)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.CREATED))
-                .andExpect(jsonPath("$.message").value("Successful sensor update"))
-                .andExpect(jsonPath("$.data.reading").value(5))
-                .andExpect(jsonPath("$.data.averageAlerts").value(3))
-                .andExpect(jsonPath("$.data.redAlerts").value(1))
-                .andExpect(jsonPath("$.data.enabled").value(true));
+                .andExpect(jsonPath("$.reading").value(5))
+                .andExpect(jsonPath("$.averageAlerts").value(3))
+                .andExpect(jsonPath("$.redAlerts").value(1))
+                .andExpect(jsonPath("$.enabled").value(true));
     }
 
     @ParameterizedTest
@@ -202,10 +185,8 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestSensorUpdate)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.readings").value(expectedMessage));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.readings").value(expectedMessage));
     }
 
     @ParameterizedTest
@@ -222,10 +203,8 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestSensorUpdate)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.averageAlerts").value(expectedMessage));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.averagealerts").value(expectedMessage));
     }
 
     @ParameterizedTest
@@ -242,10 +221,8 @@ public class SensorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestSensorUpdate)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.redAlerts").value(expectedMessage));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.redalerts").value(expectedMessage));
     }
 
     @Test
@@ -255,9 +232,7 @@ public class SensorControllerTest {
 
         this.mockMvc.perform(delete("/sensors/admin/delete/"+sensor.getId()))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.NO_CONTENT))
-                .andExpect(jsonPath("$.message").value("Sensor deleted"));
+                .andExpect(jsonPath("$").value("Sensor deleted"));
     }
 
     @Test
@@ -267,8 +242,6 @@ public class SensorControllerTest {
 
         this.mockMvc.perform(delete("/sensors/admin/delete/"+sensor.getId()))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.NO_CONTENT))
-                .andExpect(jsonPath("$.message").value("Sensor dont exist or your dont have permissions"));
+                .andExpect(jsonPath("$").value("Sensor dont exist or your dont have permissions"));
     }
 }

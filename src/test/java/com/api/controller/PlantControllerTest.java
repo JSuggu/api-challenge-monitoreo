@@ -1,13 +1,11 @@
 package com.api.controller;
 
-import com.api.handler.StatusCode;
 import com.api.modules.plant.*;
 import com.api.modules.user.Role;
 import com.api.modules.user.User;
 import com.api.security.auth.*;
 import com.api.security.jwt.JwtService;
 import com.api.security.jwt.UserDetailsServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -70,11 +67,8 @@ public class PlantControllerTest {
 
         this.mockMvc.perform(get("/plants/dev"))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.OK))
-                .andExpect(jsonPath("$.message").value("Success"))
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data", hasSize(3)));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3));
     }
 
     @Test
@@ -83,11 +77,8 @@ public class PlantControllerTest {
 
         this.mockMvc.perform(get("/plants/dev"))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.OK))
-                .andExpect(jsonPath("$.message").value("Success"))
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data", hasSize(2)));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(2));
     }
 
     @Test
@@ -102,12 +93,9 @@ public class PlantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestNewPlant)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.CREATED))
-                .andExpect(jsonPath("$.message").value("Successful Save"))
-                .andExpect(jsonPath("$.data.name").value("New Plant"))
-                .andExpect(jsonPath("$.data.country").value("Argentina"))
-                .andExpect(jsonPath("$.data.sensors").doesNotExist());
+                .andExpect(jsonPath("$.name").value("New Plant"))
+                .andExpect(jsonPath("$.country").value("Argentina"))
+                .andExpect(jsonPath("$.sensors").doesNotExist());
     }
 
     @Test
@@ -118,10 +106,8 @@ public class PlantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestNewPlant)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.name").value("Name cant be empty"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.name").value("Name cant be empty"));
     }
 
     @Test
@@ -132,10 +118,8 @@ public class PlantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestNewPlant)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.country").value("Country cant be empty"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.country").value("Country cant be empty"));
     }
 
     @Test
@@ -151,13 +135,10 @@ public class PlantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestUpdatePlant)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.CREATED))
-                .andExpect(jsonPath("$.message").value("Successful Update"))
-                .andExpect(jsonPath("$.data.uuid").value(userPlantList.getFirst().getUuid()))
-                .andExpect(jsonPath("$.data.name").value("Updated plant"))
-                .andExpect(jsonPath("$.data.country").value("Uruguay"))
-                .andExpect(jsonPath("$.data.sensors").doesNotExist());
+                .andExpect(jsonPath("$.uuid").value(userPlantList.getFirst().getUuid()))
+                .andExpect(jsonPath("$.name").value("Updated plant"))
+                .andExpect(jsonPath("$.country").value("Uruguay"))
+                .andExpect(jsonPath("$.sensors").doesNotExist());
     }
 
     @Test
@@ -169,10 +150,8 @@ public class PlantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestNewPlant)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.country").value("Name cant be empty"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.name").value("Name cant be empty"));
     }
 
     @Test
@@ -184,10 +163,8 @@ public class PlantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestNewPlant)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.country").value("Country cant be empty"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.country").value("Country cant be empty"));
     }
 
     @Test
@@ -197,9 +174,6 @@ public class PlantControllerTest {
 
         this.mockMvc.perform(delete("/plants/admin/delete/"+plantUuid))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.NO_CONTENT))
-                .andExpect(jsonPath("$.message").value("Plant deleted"))
-                .andExpect(jsonPath("$.data").doesNotExist());
+                .andExpect(jsonPath("$").value("Plant deleted"));
     }
 }

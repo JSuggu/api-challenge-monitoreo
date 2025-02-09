@@ -10,6 +10,8 @@ import com.api.security.jwt.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,8 +24,7 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(AuthController.class)
@@ -49,93 +50,55 @@ public class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.CREATED))
-                .andExpect(jsonPath("$.message").value("User created"));
+                .andExpect(content().string("User created"));
     }
 
-    @Test
-    void register_usernameNull_return400() throws Exception {
-        RegisterRequest newUser = new RegisterRequest(null, "username@gmail.com", "username1234");
+    @ParameterizedTest
+    @CsvSource({
+            ", Username cant be empty",
+            "user, Username must be 6 - 30 characters"
+    })
+    void register_invalidUsername_return400(String username, String expectedMessage) throws Exception {
+        RegisterRequest newUser = new RegisterRequest(username, "username@gmail.com", "username1234");
 
         this.mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.username").value("Username cant be empty"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.username").value(expectedMessage));
     }
 
-    @Test
-    void register_invalidUsername_return400() throws Exception {
-        RegisterRequest newUser = new RegisterRequest("user", "username@gmail.com", "username1234");
+    @ParameterizedTest
+    @CsvSource({
+            ", Email cant be empty",
+            "user, Invalid email"
+    })
+    void register_invalidEmail_return400(String email, String expectedMessage) throws Exception {
+        RegisterRequest newUser = new RegisterRequest("username", email, "username1234");
 
         this.mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.username").value("Username must be 6 - 30 characters"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.email").value(expectedMessage));
     }
 
-    @Test
-    void register_emailNull_return400() throws Exception {
-        RegisterRequest newUser = new RegisterRequest("username", null, "username1234");
+    @ParameterizedTest
+    @CsvSource({
+            ", Password cant be empty",
+            "pass, Password must be greater than 8 characters"
+    })
+    void register_invalidPassword_return400(String password, String expectedMessage) throws Exception {
+        RegisterRequest newUser = new RegisterRequest("username", "username@gmail.com", password);
 
         this.mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.email").value("Email cant be empty"));
-    }
-
-    @Test
-    void register_invalidEmail_return400() throws Exception {
-        RegisterRequest newUser = new RegisterRequest("username", "username.com", "username1234");
-
-        this.mockMvc.perform(post("/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newUser)))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.email").value("Invalid email"));
-    }
-
-    @Test
-    void register_passwordNull_return400() throws Exception {
-        RegisterRequest newUser = new RegisterRequest("username", "username@gmail.com", null);
-
-        this.mockMvc.perform(post("/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newUser)))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.password").value("Password cant be empty"));
-    }
-
-    @Test
-    void register_invalidPassword_return400() throws Exception {
-        RegisterRequest newUser = new RegisterRequest("username", "username@gmail.com", "user12");
-
-        this.mockMvc.perform(post("/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newUser)))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.password").value("Password must be greater than 8 characters"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.password").value(expectedMessage));
     }
 
     @Test
@@ -149,10 +112,10 @@ public class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.flag").value(true))
-                .andExpect(jsonPath("$.code").value(StatusCode.OK))
-                .andExpect(jsonPath("$.message").value("Successful login"))
-                .andExpect(jsonPath("$.data").exists());
+                .andExpect(jsonPath("$.token.token").value("faketoken1234"))
+                .andExpect(jsonPath("$.user.username").value("username"))
+                .andExpect(jsonPath("$.user.email").value("username@gmail.com"))
+                .andExpect(jsonPath("$.user.role").value("admin"));
     }
 
     @Test
@@ -163,10 +126,8 @@ public class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.username").value("Username cant be empty"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.username").value("Username cant be empty"));
     }
 
     @Test
@@ -177,9 +138,7 @@ public class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(StatusCode.INVALID_ARGUMENT))
-                .andExpect(jsonPath("$.message").value("MethodArgumentNotValidException"))
-                .andExpect(jsonPath("$.data.password").value("Password cant be empty"));
+                .andExpect(jsonPath("$.error").value("MethodArgumentNotValidException"))
+                .andExpect(jsonPath("$.password").value("Password cant be empty"));
     }
 }
