@@ -26,10 +26,15 @@ public class FilterChain {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.
                 authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/swagger-ui/**",
+                                "/api/swagger-ui.html",
+                                "/api/v3/api-docs/**",
+                                "/api/v3/api-docs.yaml",
+                                "/api/v3/api-docs/swagger-config").permitAll()
                         .requestMatchers(new RegexRequestMatcher(".*/auth/.*", null)).permitAll()
                         .requestMatchers(new RegexRequestMatcher(".*/dev/.*", null)).hasRole("DEVELOPER")
                         .requestMatchers(new RegexRequestMatcher(".*/admin/.*", null)).hasAnyRole("ADMIN", "DEVELOPER")
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sessionManager -> sessionManager
