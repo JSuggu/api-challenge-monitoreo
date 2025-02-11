@@ -8,10 +8,10 @@ import com.api.security.auth.AuthService;
 import com.api.security.auth.LoginRequest;
 import com.api.security.auth.LoginResponse;
 import com.api.security.auth.RegisterRequest;
+import com.api.utils.ResponseMessageDTO;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,10 +43,10 @@ public class AuthServiceTest {
     @Test
     void register_savedSuccessful_returnUser() {
         RegisterRequest registerData = new RegisterRequest("user", "user@gmail.com", "username1234");
-        String response = authService.register(registerData);
+        ResponseMessageDTO response = authService.register(registerData);
         User savedUser = userRepository.findByUsername("user").orElseThrow();
 
-        assertEquals("User saved successfully", response);
+        assertEquals("User saved successfully", response.getMessage());
         assertTrue(passwordEncoder.matches("username1234",savedUser.getPassword()));
     }
 
@@ -64,7 +64,7 @@ public class AuthServiceTest {
         LoginRequest loginData = new LoginRequest("username", "username1234");
         LoginResponse response = authService.login(loginData);
 
-        assertEquals(String.class, response.getToken().token().getClass());
+        assertEquals(String.class, response.getToken().jwt().getClass());
         assertEquals(UserDTO.class, response.getUser().getClass());
         assertEquals(Role.admin, response.getUser().getRole());
     }

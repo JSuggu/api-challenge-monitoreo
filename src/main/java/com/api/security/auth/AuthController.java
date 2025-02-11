@@ -1,6 +1,7 @@
 package com.api.security.auth;
 
 import com.api.handler.StatusCode;
+import com.api.utils.ResponseMessageDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,10 +32,10 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Bad credentials"),
             @ApiResponse(responseCode = "500", description = "Duplicate user.")
     })
-    public ResponseEntity<String> register(@Schema(description = "User data required for registration.")
+    public ResponseEntity<ResponseMessageDTO> register(@Schema(description = "User data required for registration.")
             @Valid @RequestBody RegisterRequest request) {
-        String message = authService.register(request);
-        return ResponseEntity.status(StatusCode.CREATED).body(message);
+        ResponseMessageDTO response = authService.register(request);
+        return ResponseEntity.status(StatusCode.CREATED).body(response);
     }
 
     @ResponseStatus(HttpStatus.OK)

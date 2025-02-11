@@ -1,4 +1,4 @@
 package com.api.security.jwt;
 
-public record Token (String token) {
+public record Token (String jwt) {
 }

@@ -16,6 +16,7 @@ import com.api.modules.user.Role;
 import com.api.modules.user.User;
 import com.api.modules.user.UserRepository;
 import com.api.security.auth.AuthService;
+import com.api.utils.ResponseMessageDTO;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -231,9 +232,9 @@ public class SensorServiceTest {
     void deleteSensor_validSensorAndUser_returnOkMessage(){
         User user2 = userList.get(1);
         when(authService.getUserUuid()).thenReturn(user2.getUuid());
-        String message = sensorService.deleteSensor(9L);
+        ResponseMessageDTO response = sensorService.deleteSensor(9L);
 
-        Assertions.assertEquals("Sensor deleted", message);
+        Assertions.assertEquals("Sensor deleted", response.getMessage());
     }
 
     @Test
@@ -241,8 +242,8 @@ public class SensorServiceTest {
         String randomUserUuid = UUID.randomUUID().toString();
         when(authService.getUserUuid()).thenReturn(randomUserUuid);
 
-        String message = sensorService.deleteSensor(10L);
-        Assertions.assertEquals("Sensor dont exist or your dont have permissions", message);
+        ResponseMessageDTO response = sensorService.deleteSensor(10L);
+        Assertions.assertEquals("Sensor dont exist or your dont have permissions", response.getMessage());
     }
 
     @Test
@@ -250,8 +251,8 @@ public class SensorServiceTest {
         User user = userList.getFirst();
         when(authService.getUserUuid()).thenReturn(user.getUuid());
 
-        String message = sensorService.deleteSensor(1000L);
-        Assertions.assertEquals("Sensor dont exist or your dont have permissions", message);
+        ResponseMessageDTO response = sensorService.deleteSensor(1000L);
+        Assertions.assertEquals("Sensor dont exist or your dont have permissions", response.getMessage());
     }
 
 }

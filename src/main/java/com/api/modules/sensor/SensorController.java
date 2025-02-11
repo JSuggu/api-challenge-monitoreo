@@ -5,6 +5,7 @@ import com.api.handler.custom_exception.CustomNotFoundException;
 import com.api.modules.sensor.dto.SensorCreateDTO;
 import com.api.modules.sensor.dto.SensorDefaultCreateDTO;
 import com.api.modules.sensor.dto.SensorUpdateDTO;
+import com.api.utils.ResponseMessageDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -92,8 +93,8 @@ public class SensorController {
     })
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<String> deleteSensor(@PathVariable(name = "id") Long id){
-        String message = sensorService.deleteSensor(id);
-        return ResponseEntity.status(StatusCode.OK).body(message);
+    public ResponseEntity<ResponseMessageDTO> deleteSensor(@PathVariable(name = "id") Long id){
+        ResponseMessageDTO response = sensorService.deleteSensor(id);
+        return ResponseEntity.status(StatusCode.OK).body(response);
     }
 }

@@ -7,6 +7,7 @@ import com.api.security.auth.*;
 import com.api.security.jwt.JwtService;
 import com.api.security.jwt.Token;
 import com.api.security.jwt.UserDetailsServiceImpl;
+import com.api.utils.ResponseMessageDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,13 +45,13 @@ public class AuthControllerTest {
     void register_validUser_return201() throws Exception {
         RegisterRequest newUser = new RegisterRequest("username", "username@gmail.com", "username1234");
 
-        when(authService.register(Mockito.any())).thenReturn("User created");
+        when(authService.register(Mockito.any())).thenReturn(new ResponseMessageDTO("User saved successfully"));
 
         this.mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string("User created"));
+                .andExpect(jsonPath("$.message").value("User saved successfully"));
     }
 
     @ParameterizedTest
@@ -112,7 +113,7 @@ public class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.token.token").value("faketoken1234"))
+                .andExpect(jsonPath("$.token.jwt").value("faketoken1234"))
                 .andExpect(jsonPath("$.user.username").value("username"))
                 .andExpect(jsonPath("$.user.email").value("username@gmail.com"))
                 .andExpect(jsonPath("$.user.role").value("admin"));

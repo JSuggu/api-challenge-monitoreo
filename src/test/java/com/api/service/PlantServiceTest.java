@@ -6,6 +6,7 @@ import com.api.modules.user.Role;
 import com.api.modules.user.User;
 import com.api.modules.user.UserRepository;
 import com.api.security.auth.AuthService;
+import com.api.utils.ResponseMessageDTO;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -153,9 +154,9 @@ public class PlantServiceTest {
         Plant plant = plantList.getLast();
         when(authService.getUserUuid()).thenReturn(user.getUuid());
 
-        String confirmedMessage = plantService.deletePlant(plant.getUuid());
+        ResponseMessageDTO confirmedMessage = plantService.deletePlant(plant.getUuid());
 
-        Assertions.assertEquals("Plant deleted", confirmedMessage);
+        Assertions.assertEquals("Plant deleted", confirmedMessage.getMessage());
     }
 
     @Test
@@ -163,9 +164,9 @@ public class PlantServiceTest {
         User user = userList.getLast();
         when(authService.getUserUuid()).thenReturn(user.getUuid());
 
-        String nonPlantMessage = plantService.deletePlant(UUID.randomUUID().toString());
+        ResponseMessageDTO nonPlantMessage = plantService.deletePlant(UUID.randomUUID().toString());
 
-        Assertions.assertEquals("The plant you are trying delete doesnt exist or dont have permissons", nonPlantMessage);
+        Assertions.assertEquals("The plant you are trying delete doesnt exist or dont have permissons", nonPlantMessage.getMessage());
     }
 
     @Test
@@ -174,8 +175,8 @@ public class PlantServiceTest {
         Plant plant = plantList.getLast();
         when(authService.getUserUuid()).thenReturn(user.getUuid());
 
-        String wrongUserMessage = plantService.deletePlant(plant.getUuid());
+        ResponseMessageDTO wrongUserMessage = plantService.deletePlant(plant.getUuid());
 
-        Assertions.assertEquals("The plant you are trying delete doesnt exist or dont have permissons", wrongUserMessage);
+        Assertions.assertEquals("The plant you are trying delete doesnt exist or dont have permissons", wrongUserMessage.getMessage());
     }
 }

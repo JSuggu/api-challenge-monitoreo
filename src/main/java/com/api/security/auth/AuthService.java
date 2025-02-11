@@ -6,6 +6,7 @@ import com.api.modules.user.UserDTO;
 import com.api.modules.user.UserRepository;
 import com.api.security.jwt.JwtService;
 import com.api.security.jwt.Token;
+import com.api.utils.ResponseMessageDTO;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -28,7 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public String register(RegisterRequest request){
+    public ResponseMessageDTO register(RegisterRequest request){
         User newUser = User
                 .builder()
                 .username(request.getUsername())
@@ -38,7 +39,7 @@ public class AuthService {
                 .build();
         userRepository.save(newUser);
 
-        return "User saved successfully";
+        return new ResponseMessageDTO("User saved successfully");
     }
 
     public LoginResponse login(LoginRequest request) {

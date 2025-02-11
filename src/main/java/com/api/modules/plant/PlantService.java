@@ -5,6 +5,7 @@ import com.api.modules.user.User;
 import com.api.modules.user.UserService;
 import com.api.security.auth.AuthService;
 import com.api.utils.DTOMapper;
+import com.api.utils.ResponseMessageDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.PermissionDeniedDataAccessException;
@@ -62,9 +63,9 @@ public class PlantService {
     }
 
     @Transactional
-    public String deletePlant (String uuid){
+    public ResponseMessageDTO deletePlant (String uuid){
         int affectedRows = plantRepository.deleteByUuidAndUserUuid(uuid, authService.getUserUuid());
-
-        return affectedRows == 0 ? "The plant you are trying delete doesnt exist or dont have permissons" : "Plant deleted";
+        String message = affectedRows == 0 ? "The plant you are trying delete doesnt exist or dont have permissons" : "Plant deleted";
+        return new ResponseMessageDTO(message);
     }
 }

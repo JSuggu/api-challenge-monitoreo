@@ -9,6 +9,7 @@ import com.api.modules.sensor.dto.SensorUpdateDTO;
 import com.api.modules.sensor_type.SensorType;
 import com.api.modules.sensor_type.SensorTypeService;
 import com.api.security.auth.AuthService;
+import com.api.utils.ResponseMessageDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -86,8 +87,9 @@ public class SensorService {
     }
 
     @Transactional
-    public String deleteSensor (Long id){
+    public ResponseMessageDTO deleteSensor (Long id){
         int rowsAffected = sensorRepository.deleteSensorByIdAndUserUuid(id, authService.getUserUuid());
-        return rowsAffected == 0? "Sensor dont exist or your dont have permissions" :  "Sensor deleted";
+        String message = rowsAffected == 0? "Sensor dont exist or your dont have permissions" :  "Sensor deleted";
+        return new ResponseMessageDTO(message);
     }
 }

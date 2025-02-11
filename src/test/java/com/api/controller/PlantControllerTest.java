@@ -6,6 +6,7 @@ import com.api.modules.user.User;
 import com.api.security.auth.*;
 import com.api.security.jwt.JwtService;
 import com.api.security.jwt.UserDetailsServiceImpl;
+import com.api.utils.ResponseMessageDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -170,10 +171,10 @@ public class PlantControllerTest {
     @Test
     void deletePlant_return200() throws Exception {
         String plantUuid = user2PlantList.getFirst().getUuid();
-        when(plantService.deletePlant(Mockito.any())).thenReturn("Plant deleted");
+        when(plantService.deletePlant(Mockito.any())).thenReturn(new ResponseMessageDTO("Plant deleted"));
 
         this.mockMvc.perform(delete("/plants/admin/delete/"+plantUuid))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$").value("Plant deleted"));
+                .andExpect(jsonPath("$.message").value("Plant deleted"));
     }
 }

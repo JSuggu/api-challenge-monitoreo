@@ -14,6 +14,7 @@ import com.api.modules.user.User;
 import com.api.security.auth.AuthService;
 import com.api.security.jwt.JwtService;
 import com.api.security.jwt.UserDetailsServiceImpl;
+import com.api.utils.ResponseMessageDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -228,20 +229,20 @@ public class SensorControllerTest {
     @Test
     void deleteSensor_return200() throws Exception {
         Sensor sensor = userPlantList.getFirst().getSensors().get(5);
-        when(sensorService.deleteSensor(sensor.getId())).thenReturn("Sensor deleted");
+        when(sensorService.deleteSensor(sensor.getId())).thenReturn(new ResponseMessageDTO("Sensor deleted"));
 
         this.mockMvc.perform(delete("/sensors/admin/delete/"+sensor.getId()))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$").value("Sensor deleted"));
+                .andExpect(jsonPath("$.message").value("Sensor deleted"));
     }
 
     @Test
     void deleteSensor_invalidSensorId_return200() throws Exception {
         Sensor sensor = userPlantList.getFirst().getSensors().getFirst();
-        when(sensorService.deleteSensor(sensor.getId())).thenReturn("Sensor dont exist or your dont have permissions");
+        when(sensorService.deleteSensor(sensor.getId())).thenReturn(new ResponseMessageDTO("Sensor dont exist or your dont have permissions"));
 
         this.mockMvc.perform(delete("/sensors/admin/delete/"+sensor.getId()))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$").value("Sensor dont exist or your dont have permissions"));
+                .andExpect(jsonPath("$.message").value("Sensor dont exist or your dont have permissions"));
     }
 }

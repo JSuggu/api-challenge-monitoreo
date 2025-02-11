@@ -1,6 +1,7 @@
 package com.api.modules.plant;
 
 import com.api.handler.StatusCode;
+import com.api.utils.ResponseMessageDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -99,8 +100,8 @@ public class PlantController {
     })
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/admin/delete/{uuid}")
-    public ResponseEntity<String> deletePlant(@PathVariable(name = "uuid") String uuid){
-        String message = plantService.deletePlant(uuid);
-        return ResponseEntity.status(StatusCode.OK).body(message);
+    public ResponseEntity<ResponseMessageDTO> deletePlant(@PathVariable(name = "uuid") String uuid){
+        ResponseMessageDTO response = plantService.deletePlant(uuid);
+        return ResponseEntity.status(StatusCode.OK).body(response);
     }
 }
