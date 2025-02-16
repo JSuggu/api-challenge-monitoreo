@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,7 +36,21 @@ public class ExceptionHandlerAdvice {
             errorDetails.put(error.getField().toLowerCase(), error.getDefaultMessage());
         }
 
-        return ResponseEntity.status(400).body(errorDetails);
+        return ResponseEntity.status(StatusCode.INVALID_ARGUMENT).body(errorDetails);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ApiResponse(
+            responseCode = "400",
+            description = "Method argument not valid."
+    )
+    public ResponseEntity<Map<String, String>> httpMessageNotReadableException(HttpMessageNotReadableException ex){
+        Map<String, String> errorDetails = new HashMap<>();
+        errorDetails.put("error", ex.getClass().getSimpleName());
+        errorDetails.put("message", ex.getMessage());
+
+        return ResponseEntity.status(StatusCode.INVALID_ARGUMENT).body(errorDetails);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

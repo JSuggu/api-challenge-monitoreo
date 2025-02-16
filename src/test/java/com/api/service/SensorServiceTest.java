@@ -152,7 +152,7 @@ public class SensorServiceTest {
         Sensor sensor = sensorService.saveSensor(requestData);
 
         Assertions.assertEquals("type1", sensor.getSensorType().getName());
-        Assertions.assertEquals(0, sensor.getReading());
+        Assertions.assertEquals(0, sensor.getReadings());
         Assertions.assertEquals(0, sensor.getAverageAlerts());
         Assertions.assertEquals(0, sensor.getRedAlerts());
         Assertions.assertTrue(sensor.getEnabled());
@@ -202,7 +202,7 @@ public class SensorServiceTest {
 
         Sensor updatedSensor = sensorService.updateSensor(requestData, 1L);
 
-        Assertions.assertEquals(10, updatedSensor.getReading());
+        Assertions.assertEquals(10, updatedSensor.getReadings());
         Assertions.assertEquals(5, updatedSensor.getAverageAlerts());
         Assertions.assertEquals(1, updatedSensor.getRedAlerts());
         Assertions.assertFalse(updatedSensor.getEnabled());

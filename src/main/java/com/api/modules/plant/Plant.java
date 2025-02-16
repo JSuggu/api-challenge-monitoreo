@@ -26,9 +26,10 @@ public class Plant {
     private String name;
     @Column(nullable = false)
     private String country;
-    @OneToMany(mappedBy = "plant", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "plant", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id ASC")
     private List<Sensor> sensors;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_uuid", referencedColumnName = "uuid", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

@@ -1,6 +1,7 @@
 package com.api.security.jwt;
 
 import ch.qos.logback.core.util.StringUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,12 +21,16 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final ObjectMapper objectMapper;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -54,22 +60,21 @@ public class JwtFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request,response);
             }
         } catch (ServletException | IOException ex){
-            setErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, ex.getMessage());
+            setErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, ex.getClass().getSimpleName(), ex.getMessage());
         } catch (JwtException ex) {
-            setErrorResponse(HttpServletResponse.SC_BAD_REQUEST, response, ex.getMessage());
+            setErrorResponse(HttpServletResponse.SC_BAD_REQUEST, response,ex.getClass().getSimpleName(), ex.getMessage());
         }
 
     }
 
-    private void setErrorResponse(int status, HttpServletResponse response, String message) throws IOException {
+    private void setErrorResponse(int status, HttpServletResponse response,String error , String message) throws IOException {
+        Map<String, String> errorsDetail = new HashMap<>();
+        errorsDetail.put("error", error);
+        errorsDetail.put("message", message);
+
         response.setStatus(status);
         response.setContentType("application/json");
-        response.getWriter().write("{"
-                + "\"flag\": false,"
-                + "\"code\":" + status + ","
-                + "\"message\":\"" + message + "\","
-                + "\"data\": null"
-                + "}");
+        response.getWriter().write(objectMapper.writeValueAsString(errorsDetail));
     }
 
     private String getToken(HttpServletRequest request){

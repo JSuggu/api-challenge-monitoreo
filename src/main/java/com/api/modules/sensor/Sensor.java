@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -22,7 +24,7 @@ public class Sensor {
     @Builder.Default
     @Column(nullable = false)
     @Schema(description = "Readings of the sensor")
-    private Integer reading = 0;
+    private Integer readings = 0;
     @Builder.Default
     @Column(nullable = false)
     @Schema(description = "Average alerts of the sensor")
@@ -42,5 +44,6 @@ public class Sensor {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plant_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Plant plant;
 }

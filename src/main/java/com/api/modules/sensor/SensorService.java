@@ -78,7 +78,7 @@ public class SensorService {
 
         if(!dbSensor.getPlant().getUser().getUuid().equals(authService.getUserUuid())) throw new PermissionDeniedDataAccessException("You dont have permission to modify this plant.", null);
 
-        dbSensor.setReading(request.getReadings());
+        dbSensor.setReadings(request.getReadings());
         dbSensor.setAverageAlerts(request.getAverageAlerts());
         dbSensor.setRedAlerts(request.getRedAlerts());
         dbSensor.setEnabled(request.getEnabled());

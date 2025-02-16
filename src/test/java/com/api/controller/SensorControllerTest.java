@@ -155,7 +155,7 @@ public class SensorControllerTest {
     void updateSensor_validSensor_returnUpdatedSensor() throws Exception {
         Sensor sensor = userPlantList.getFirst().getSensors().getFirst();
         SensorUpdateDTO requestSensorUpdate = new SensorUpdateDTO(sensor.getPlant().getUuid(),5,3,1, true);
-        sensor.setReading(requestSensorUpdate.getReadings());
+        sensor.setReadings(requestSensorUpdate.getReadings());
         sensor.setAverageAlerts(requestSensorUpdate.getAverageAlerts());
         sensor.setRedAlerts(requestSensorUpdate.getRedAlerts());
         sensor.setEnabled(requestSensorUpdate.getEnabled());
