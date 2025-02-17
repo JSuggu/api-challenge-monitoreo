@@ -9,7 +9,6 @@ import com.api.modules.sensor_type.SensorTypeRepository;
 import com.api.modules.user.Role;
 import com.api.modules.user.User;
 import com.api.modules.user.UserRepository;
-import jakarta.persistence.EntityManager;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -66,4 +65,5 @@ public class ApiApplication {
 		};
 
 	}
+
 }

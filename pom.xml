@@ -10,8 +10,8 @@
 	</parent>
 	<groupId>com</groupId>
 	<artifactId>api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>backend</name>
+	<version>0.0.1</version>
+	<name>api-monitoring</name>
 	<description>project for challenge tecnico 2025 techforb</description>
 	<url/>
 	<licenses>
